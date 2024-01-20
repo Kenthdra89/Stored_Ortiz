@@ -1,0 +1,34 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `OrdenarTabla`(IN nombre_tabla VARCHAR(255), IN campo_ordenamiento VARCHAR(255), IN orden VARCHAR(10))
+BEGIN
+
+    SET @sql_query = CONCAT('SELECT * FROM ', nombre_tabla, ' ORDER BY ', campo_ordenamiento, ' ', orden);
+    
+    PREPARE stmt FROM @sql_query;
+    EXECUTE stmt;
+    
+    DEALLOCATE PREPARE stmt;
+END
+
+CALL OrdenarTabla('PRODUCTOS', 'Nombre', 'ASC');
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GestionarRegistros`(IN nombre_tabla VARCHAR(255), IN accion INT, IN valores TEXT)
+BEGIN
+    IF accion = 1 THEN
+       
+        SET @sql_query = CONCAT('INSERT INTO ', nombre_tabla, ' VALUES (', valores, ')');
+    ELSEIF accion = 2 THEN
+       
+        SET @sql_query = CONCAT('DELETE FROM ', nombre_tabla, ' WHERE ID = ', valores);
+    END IF;
+
+    PREPARE stmt FROM @sql_query;
+    EXECUTE stmt;
+    
+    DEALLOCATE PREPARE stmt;
+END
+
+Insertar registro en Productos
+CALL GestionarRegistros('PRODUCTOS', 1, 'NULL, "Nuevo Producto", 10.99, 100, "Unidad"');
+
+Eliminar registro con ID 1 Clientes
+CALL GestionarRegistros('CLIENTES', 2, '1');
